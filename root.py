@@ -1,31 +1,32 @@
-import tkinter as tk
-from unittest import result
-import cv2
-import matplotlib.pyplot as plt
-import numpy as np
-from ultralytics import YOLO
-import cvzone
-from patched_yolo_infer import(
-    visualize_results_usual_yolo_inference,
-    get_crops,
-)
-from ultralytics.engine import results
-from datetime import datetime  
+import builtins
 import csv
-import io
+import tkinter as tk
+from datetime import datetime
 
-label1 = "Welcome to my final year project\n I'm Chan Lok Hei 22068341D\n This project aims to help enhancing the speed of classifying garbage." 
+import cv2
+from patched_yolo_infer import (
+    visualize_results_usual_yolo_inference,
+)
 
-def open(): print('open')
+from ultralytics import YOLO
+
+label1 = "Welcome to my final year project\n I'm Chan Lok Hei 22068341D\n This project aims to help enhancing the speed of classifying garbage."
+
+
+def open():
+    print("open")
+
+
 def exit():
-    print('exit')
+    print("exit")
     root.destroy()
+
 
 def recreate():
     global root
     root.update()
     root.deiconify()
-     
+
 
 def prediction_R():
     global root
@@ -40,15 +41,15 @@ def prediction_R():
         results = model(frame)
         if len(results[0].boxes) > 0:
             for box in results[0].boxes:
-            # Get the ID (number) and convert it to a Name (string)
+                # Get the ID (number) and convert it to a Name (string)
                 class_id = int(box.cls[0])
                 class_name = model.names[class_id]
                 conf_score = round(float(box.conf[0]) * 100, 2)
                 session_data.append([class_name, conf_score])
 
         annotated = results[0].plot()
-        cv2.imshow('YOLO Real-Time', annotated)
-        if cv2.waitKey(1) & 0xFF == ord('z'):
+        cv2.imshow("YOLO Real-Time", annotated)
+        if cv2.waitKey(1) & 0xFF == ord("z"):
             cv2.destroyAllWindows()
             save_accuracy_data(session_data)
             break
@@ -56,26 +57,23 @@ def prediction_R():
     cv2.destroyAllWindows()
     root.deiconify()
 
+
 def prediction_P():
-       global root
-       root.withdraw()
-       model = YOLO("/Users/hayhay/Documents/ultralytics-main/runs/detect/train11/weights/best.pt")
-       img_path = '/Users/hayhay/Documents/labelling/IMG_6267.jpg'
-       img = cv2.imread(img_path)
-       results = model(img_path)       
-       for result in results:
-        boxes = result.boxes
-        masks = result.masks
-        keypoints = result.keypoints
-        probs = result.probs
-        if cv2.waitKey(1) == ord('z'):
+    global root
+    root.withdraw()
+    model = YOLO("/Users/hayhay/Documents/ultralytics-main/runs/detect/train11/weights/best.pt")
+    img_path = "/Users/hayhay/Documents/labeling/IMG_6267.jpg"
+    img = cv2.imread(img_path)
+    results = model(img_path)
+    for result in results:
+        if cv2.waitKey(1) == ord("z"):
             cv2.destroyAllWindows()
             break
         print(result)
         imgsz = 640
         conf = 0.4
         iou = 0.7
-           
+
         visualize_results_usual_yolo_inference(
             img,
             model,
@@ -103,21 +101,21 @@ def prediction_P():
             inference_extra_args=None,
         )
         cv2.destroyAllWindows()
-       
-       root.deiconify()
+
+    root.deiconify()
+
 
 def save_accuracy_data(data):
     filename = f"accuracylog{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
     # Use io.open instead of just open
-    with io.open(filename, 'w', newline='', encoding='utf-8') as f:
+    with builtins.open(filename, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["Object_Class", "Accuracy_Score"])
         writer.writerows(data)
     print(f"Data saved to {filename}")
 
-      
 
-# create main 
+# create main
 root = tk.Tk()
 root.title("Project Garbage-classification")
 root.geometry("700x600")
@@ -131,18 +129,12 @@ menubar.add_command(label="Exit", command=exit)
 # adding elements
 label = tk.Label(root, text=label1, font=("Arial", 16))
 label.pack(pady=150)
-button1 = tk.Button(root, 
-                   text="Real-Time Mode",
-                   command=prediction_R)
-button1.pack(side="left",padx=60)
-button2 = tk.Button(root, 
-                   text="Photo Analysis Mode",
-                   command=prediction_P)
-button2.pack(side="right",padx=60)
-buttonQuit = tk.Button(root,
-                       text="quit",
-                       command=quit)
-buttonQuit.pack(side="bottom",padx=20)
+button1 = tk.Button(root, text="Real-Time Mode", command=prediction_R)
+button1.pack(side="left", padx=60)
+button2 = tk.Button(root, text="Photo Analysis Mode", command=prediction_P)
+button2.pack(side="right", padx=60)
+buttonQuit = tk.Button(root, text="quit", command=quit)
+buttonQuit.pack(side="bottom", padx=20)
 
 # main
 root.mainloop()
