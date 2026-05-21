@@ -1,8 +1,10 @@
 import os
-import cv2
 import random
-import numpy as np
+
+import cv2
 import matplotlib.pyplot as plt
+import numpy as np
+
 from ultralytics import YOLO
 
 
@@ -32,8 +34,7 @@ def visualize_results_usual_yolo_inference(
     return_image_array=False,
     inference_extra_args=None,
 ):
-    """
-    Visualizes the results of usual YOLO or YOLO-seg inference on an image
+    """Visualizes the results of usual YOLO or YOLO-seg inference on an image.
 
     Args:
         img (numpy.ndarray): The input image in BGR format.
@@ -46,7 +47,8 @@ def visualize_results_usual_yolo_inference(
         show_class (bool): Whether to show class labels. Default is True.
         fill_mask (bool): Whether to fill the segmented regions with color. Default is False.
         alpha (float): The transparency of filled masks. Default is 0.3.
-        color_class_background (tuple / list of tuple): The background BGR color for class labels. Default is (0, 0, 255) (red).
+        color_class_background (tuple / list of tuple): The background BGR color for class labels. Default is (0, 0,
+            255) (red).
         color_class_text (tuple): The text BGR color for class labels. Default is (255, 255, 255) (white).
         thickness (int): The thickness of bounding box and text. Default is 4.
         font: The font type for class labels. Default is cv2.FONT_HERSHEY_SIMPLEX.
@@ -58,16 +60,15 @@ def visualize_results_usual_yolo_inference(
         axis_off (bool): If True, axis is turned off in the final visualization.
         show_classes_list (list): If empty, visualize all classes. Otherwise, visualize only classes in the list.
         inference_extra_args (dict/None): Dictionary with extra ultralytics inference parameters.
-        list_of_class_colors (list/None): A list of tuples representing the colors for each class in BGR format.  
-                    If provided, these colors will be used for displaying the classes instead of random colors. 
-                    The number of tuples in the list must match the number of possible classes in the network.
-        return_image_array (bool): If True, the function returns the image bgr array instead of displaying it. 
-                                   Default is False.
+        list_of_class_colors (list/None): A list of tuples representing the colors for each class in BGR format. If
+            provided, these colors will be used for displaying the classes instead of random colors. The number of
+            tuples in the list must match the number of possible classes in the network.
+        return_image_array (bool): If True, the function returns the image bgr array instead of displaying it. Default
+            is False.
 
     Returns:
         None/np.array
     """
-
     # Perform inference
     extra_args = {} if inference_extra_args is None else inference_extra_args
     predictions = model.predict(img, imgsz=imgsz, conf=conf, iou=iou, verbose=False, **extra_args)
@@ -81,7 +82,6 @@ def visualize_results_usual_yolo_inference(
 
     # Process each prediction
     for pred in predictions:
-
         # Get the bounding boxes and convert them to a list of lists
         boxes = pred.boxes.xyxy.cpu().int().tolist()
 
@@ -139,7 +139,7 @@ def visualize_results_usual_yolo_inference(
 
             if show_class:
                 if show_confidences:
-                    label = f'{str(class_name)} {confidences[i]:.2}'
+                    label = f"{class_name!s} {confidences[i]:.2}"
                 else:
                     label = str(class_name)
                 (text_width, text_height), _ = cv2.getTextSize(label, font, font_scale, thickness)
@@ -173,7 +173,7 @@ def visualize_results_usual_yolo_inference(
         labeled_image = cv2.cvtColor(labeled_image, cv2.COLOR_BGR2RGB)
         plt.imshow(labeled_image)
         if axis_off:
-            plt.axis('off')
+            plt.axis("off")
         plt.show()
 
 
@@ -205,8 +205,7 @@ def visualize_results_yolo_pose_inference(
     return_image_array=False,
     inference_extra_args=None,
 ):
-    """
-    Visualizes the results of usual YOLO-pose inference on an image
+    """Visualizes the results of usual YOLO-pose inference on an image.
 
     Args:
         img (numpy.ndarray): The input image in BGR format.
@@ -216,18 +215,19 @@ def visualize_results_yolo_pose_inference(
         iou (float): The intersection over union threshold for detection. Default is 0.7.
         thickness (int): The thickness of bounding box, text and skeleton connections. Default is 4.
         point_radius (int): The radius of the landmark points to be drawn on the image. Default is 5.
-        connection_schema (list):  A list of tuples defining how landmarks should be connected to form a skeleton. 
-            Each tuple contains two indices representing the landmarks to be connected.
-            If None or empty, only landmarks will be drawn without any connections.
-        min_landmarks_visibility (float): The minimum confidence threshold for a landmark's visibility to be drawn. 
+        connection_schema (list): A list of tuples defining how landmarks should be connected to form a skeleton. Each
+            tuple contains two indices representing the landmarks to be connected. If None or empty, only landmarks will
+            be drawn without any connections.
+        min_landmarks_visibility (float): The minimum confidence threshold for a landmark's visibility to be drawn.
         show_boxes (bool): Whether to show bounding boxes. Default is True.
         show_class (bool): Whether to show class labels. Default is False.
-        color_class_background (tuple / list of tuple): The background BGR color for class labels. Default is (0, 0, 255) (red).
+        color_class_background (tuple / list of tuple): The background BGR color for class labels. Default is (0, 0,
+            255) (red).
         color_class_text (tuple): The text BGR color for class labels. Default is (255, 255, 255) (white).
         delta_colors (int): The random seed offset for color variation. Default is 3.
-        list_of_class_colors (list / None): A list of tuples representing the colors for each class in BGR format.  
-            If provided, these colors will be used for displaying the classes instead of random colors. 
-            The number of tuples in the list must match the number of possible classes in the network.
+        list_of_class_colors (list / None): A list of tuples representing the colors for each class in BGR format. If
+            provided, these colors will be used for displaying the classes instead of random colors. The number of
+            tuples in the list must match the number of possible classes in the network.
         random_object_colors (bool): If True, colors for each object are selected randomly.
         point_color (tuple / None): If None, then the point color is chosen to be the same as the box and skeleton;
             otherwise, the one you specify.
@@ -239,8 +239,8 @@ def visualize_results_yolo_pose_inference(
         show_classes_list (list): If empty, visualize all classes. Otherwise, visualize only classes in the list.
         show_points_list (list): If empty, visualize all points. Otherwise, visualize only points in the list.
         inference_extra_args (dict / None): Dictionary with extra ultralytics inference parameters.
-        return_image_array (bool): If True, the function returns the image bgr array instead of displaying it. 
-                                   Default is False.
+        return_image_array (bool): If True, the function returns the image bgr array instead of displaying it. Default
+            is False.
 
     Returns:
         None/np.array
@@ -261,7 +261,6 @@ def visualize_results_yolo_pose_inference(
 
     # Process each prediction
     for pred in predictions:
-
         # Get the bounding boxes and convert them to a list of lists
         boxes = pred.boxes.xyxy.cpu().int().tolist()
 
@@ -304,7 +303,7 @@ def visualize_results_yolo_pose_inference(
 
             if show_class:
                 if show_confidences:
-                    label = f'{str(class_name)} {confidences[i]:.2}'
+                    label = f"{class_name!s} {confidences[i]:.2}"
                 else:
                     label = str(class_name)
                 (text_width, text_height), _ = cv2.getTextSize(label, font, font_scale, thickness)
@@ -352,7 +351,7 @@ def visualize_results_yolo_pose_inference(
                     if show_points_list and num_point not in show_points_list:
                         continue
                     x, y = point
-                    if x > 0 and y > 0 and landmark_visibility >= min_landmarks_visibility: 
+                    if x > 0 and y > 0 and landmark_visibility >= min_landmarks_visibility:
                         if point_color is None:
                             cv2.circle(labeled_image, (x, y), point_radius, color, -1)
                         else:
@@ -366,7 +365,7 @@ def visualize_results_yolo_pose_inference(
         labeled_image = cv2.cvtColor(labeled_image, cv2.COLOR_BGR2RGB)
         plt.imshow(labeled_image)
         if axis_off:
-            plt.axis('off')
+            plt.axis("off")
         plt.show()
 
 
@@ -382,28 +381,26 @@ def get_crops(
     start_name="image",
     resize=False,
 ):
-    """
-    Preprocessing of the image. Generating crops with overlapping.
+    """Preprocessing of the image. Generating crops with overlapping.
 
     Args:
         image_full (array): numpy array of a BGR image.
         shape_x (int): size of the crop in the x-coordinate.
         shape_y (int): size of the crop in the y-coordinate.
-        overlap_x (float, optional): Percentage of overlap along the x-axis
-            (how much subsequent crops borrow information from previous ones). Default is 15.
-        overlap_y (float, optional): Percentage of overlap along the y-axis
-            (how much subsequent crops borrow information from previous ones). Default is 15.
+        overlap_x (float, optional): Percentage of overlap along the x-axis (how much subsequent crops borrow
+            information from previous ones). Default is 15.
+        overlap_y (float, optional): Percentage of overlap along the y-axis (how much subsequent crops borrow
+            information from previous ones). Default is 15.
         show (bool): enables the mode to display images using plt.imshow. Default is False.
         save_crops (bool): enables saving generated images. Default is False.
         save_folder (str): folder path to save the images. Default is "crops_folder".
         start_name (str): starting name for saved images. Default is "image".
-        resize (bool): If True, the image is resized to fit the last crop exactly. 
-                       If False, the image is not resized. Default is False.
+        resize (bool): If True, the image is resized to fit the last crop exactly. If False, the image is not resized.
+            Default is False.
 
     Returns:
         data_all_crops (list): List containing cropped images.
     """
-    
     cross_koef_x = 1 - (overlap_x / 100)
     cross_koef_y = 1 - (overlap_y / 100)
 
@@ -413,12 +410,12 @@ def get_crops(
     x_steps = int((image_full.shape[1] - shape_x) / (shape_x * cross_koef_x)) + 1
 
     if resize:
-        y_new = round((y_steps-1) * (shape_y * cross_koef_y) + shape_y)
-        x_new = round((x_steps-1) * (shape_x * cross_koef_x) + shape_x)
+        y_new = round((y_steps - 1) * (shape_y * cross_koef_y) + shape_y)
+        x_new = round((x_steps - 1) * (shape_x * cross_koef_x) + shape_x)
         image_full = cv2.resize(image_full, (x_new, y_new))
 
     if show:
-        plt.figure(figsize=[x_steps*0.9, y_steps*0.9])
+        plt.figure(figsize=[x_steps * 0.9, y_steps * 0.9])
 
     count = 0
     for i in range(y_steps):
@@ -428,19 +425,19 @@ def get_crops(
 
             # Check for residuals
             if x_start + shape_x > image_full.shape[1]:
-                print('Error in generating crops along the x-axis')
+                print("Error in generating crops along the x-axis")
                 continue
             if y_start + shape_y > image_full.shape[0]:
-                print('Error in generating crops along the y-axis')
+                print("Error in generating crops along the y-axis")
                 continue
 
-            im_temp = image_full[y_start:y_start + shape_y, x_start:x_start + shape_x]
+            im_temp = image_full[y_start : y_start + shape_y, x_start : x_start + shape_x]
 
             # Display the result:
             if show:
                 plt.subplot(y_steps, x_steps, i * x_steps + j + 1)
                 plt.imshow(cv2.cvtColor(im_temp.copy(), cv2.COLOR_BGR2RGB))
-                plt.axis('off')
+                plt.axis("off")
             count += 1
 
             data_all_crops.append(im_temp)
@@ -454,7 +451,7 @@ def get_crops(
 
     if show:
         plt.show()
-        print('Number of generated images:', count)
+        print("Number of generated images:", count)
 
     return data_all_crops
 
@@ -464,7 +461,7 @@ def visualize_results(
     boxes,
     classes_ids,
     confidences=[],
-    classes_names=[], 
+    classes_names=[],
     masks=[],
     polygons=[],
     segment=False,
@@ -484,10 +481,9 @@ def visualize_results(
     axis_off=True,
     show_classes_list=[],
     list_of_class_colors=None,
-    return_image_array=False
+    return_image_array=False,
 ):
-    """
-    Visualizes custom results of object detection or segmentation on an image.
+    """Visualizes custom results of object detection or segmentation on an image.
 
     Args:
         img (numpy.ndarray): The input image in BGR format.
@@ -501,7 +497,8 @@ def visualize_results(
         show_class (bool): Whether to show class labels. Default is True.
         fill_mask (bool): Whether to fill the segmented regions with color. Default is False.
         alpha (float): The transparency of filled masks. Default is 0.3.
-        color_class_background (tuple / list of tuple): The background BGR color for class labels. Default is (0, 0, 255) (red).
+        color_class_background (tuple / list of tuple): The background BGR color for class labels. Default is (0, 0,
+            255) (red).
         color_class_text (tuple): The text BGR color for class labels. Default is (255, 255, 255) (white).
         thickness (int): The thickness of bounding box and text. Default is 4.
         font: The font type for class labels. Default is cv2.FONT_HERSHEY_SIMPLEX.
@@ -512,16 +509,15 @@ def visualize_results(
         show_confidences (bool): If true and show_class=True, confidences near class are visualized. Default is False.
         axis_off (bool): If true, axis is turned off in the final visualization. Default is True.
         show_classes_list (list): If empty, visualize all classes. Otherwise, visualize only classes in the list.
-        list_of_class_colors (list/None): A list of tuples representing the colors for each class in BGR format. 
-                    If provided, these colors will be used for displaying the classes instead of random colors. 
-                    The number of tuples in the list must match the number of possible classes in the network.
-        return_image_array (bool): If True, the function returns the image bgr array instead of displaying it.
-                    Default is False.
-                                   
+        list_of_class_colors (list/None): A list of tuples representing the colors for each class in BGR format. If
+            provided, these colors will be used for displaying the classes instead of random colors. The number of
+            tuples in the list must match the number of possible classes in the network.
+        return_image_array (bool): If True, the function returns the image bgr array instead of displaying it. Default
+            is False.
+
     Returns:
         None/np.array
     """
-
     # Create a copy of the input image
     labeled_image = img.copy()
 
@@ -531,7 +527,7 @@ def visualize_results(
     # Process each prediction
     for i in range(len(classes_ids)):
         # Get the class for the current detection
-        if len(classes_names)>0:
+        if len(classes_names) > 0:
             class_name = str(classes_names[i])
         else:
             class_name = str(classes_ids[i])
@@ -554,14 +550,12 @@ def visualize_results(
         if segment and len(masks) > 0:
             mask = masks[i]
             # Resize mask to the size of the original image using nearest neighbor interpolation
-            mask_resized = cv2.resize(
-                np.array(mask), (img.shape[1], img.shape[0]), interpolation=cv2.INTER_NEAREST
-            )
+            mask_resized = cv2.resize(np.array(mask), (img.shape[1], img.shape[0]), interpolation=cv2.INTER_NEAREST)
             # Add label to the mask
             mask_contours, _ = cv2.findContours(
                 mask_resized.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
             )
-            
+
             if fill_mask:
                 if alpha == 1:
                     cv2.fillPoly(labeled_image, pts=mask_contours, color=color)
@@ -570,7 +564,7 @@ def visualize_results(
                     color_mask[mask_resized > 0] = color
                     labeled_image = cv2.addWeighted(labeled_image, 1, color_mask, alpha, 0)
             cv2.drawContours(labeled_image, mask_contours, -1, color, thickness)
-        
+
         elif segment and len(polygons) > 0:
             if len(polygons[i]) > 0:
                 points = np.array(polygons[i].reshape((-1, 1, 2)), dtype=np.int32)
@@ -589,7 +583,7 @@ def visualize_results(
 
         if show_class:
             if show_confidences:
-                label = f'{str(class_name)} {confidences[i]:.2}'
+                label = f"{class_name!s} {confidences[i]:.2}"
             else:
                 label = str(class_name)
             (text_width, text_height), _ = cv2.getTextSize(label, font, font_scale, thickness)
@@ -623,81 +617,76 @@ def visualize_results(
         labeled_image = cv2.cvtColor(labeled_image, cv2.COLOR_BGR2RGB)
         plt.imshow(labeled_image)
         if axis_off:
-            plt.axis('off')
+            plt.axis("off")
         plt.show()
 
 
 def create_masks_from_polygons(polygons, image):
-    """
-    Create binary masks from a list of polygons.
+    """Create binary masks from a list of polygons.
 
-    This function takes a list of polygons and an image, and generates binary masks
-    where each mask corresponds to one polygon. The masks are boolean arrays with
-    the same dimensions as the input image, where the regions covered by the polygons
-    are marked as True.
+    This function takes a list of polygons and an image, and generates binary masks where each mask corresponds to one
+    polygon. The masks are boolean arrays with the same dimensions as the input image, where the regions covered by the
+    polygons are marked as True.
 
-    Parameters:
-    polygons (list of numpy.ndarray): A list of polygons, where each polygon is
+    Parameters: polygons (list of numpy.ndarray): A list of polygons, where each polygon is
         represented as a numpy array of shape (N, 2) containing N (x, y) coordinates.
     image (numpy.ndarray): The input image, used to determine the dimensions of the masks.
 
     Returns:
-    list of numpy.ndarray: A list of binary masks, where each mask is a boolean
+        list of numpy.ndarray: A list of binary masks, where each mask is a boolean
         numpy array of the same dimensions as the input image.
     """
     # Get the dimensions of the image
     height, width = image.shape[:2]
-    
+
     # Create empty masks
     masks = []
-    
+
     for polygon in polygons:
         if len(polygon) > 0:
             points = np.array(polygon.reshape((-1, 1, 2)), dtype=np.int32)
-        
+
         # Create an empty mask with the same size as the image
         mask = np.zeros((height, width), dtype=np.uint8)
-        
+
         # Draw the polygon on the mask
         cv2.fillPoly(mask, [points], 1)
-        
+
         # Add the mask to the list
         masks.append(mask)
-    
+
     return masks
 
 
 def basic_crop_size_calculation(width, height):
-    """
-    Calculate the basic crop size and overlap based on the image dimensions.
+    """Calculate the basic crop size and overlap based on the image dimensions.
 
-    This function determines the optimal crop size and overlap for an image based on its width and height.
-    The function uses predefined thresholds to decide the crop size and overlap, ensuring efficient processing
-    for different image resolutions.
+    This function determines the optimal crop size and overlap for an image based on its width and height. The function
+    uses predefined thresholds to decide the crop size and overlap, ensuring efficient processing for different image
+    resolutions.
 
-    Parameters:
-    width (int): The width of the image in pixels.
-    height (int): The height of the image in pixels.
+    Parameters: width (int): The width of the image in pixels. height (int): The height of the image in pixels.
 
     Returns:
-    tuple: A tuple containing the crop size in the x direction (crop_shape_x), crop size in the y direction
-        (crop_shape_y), overlap in the x direction (crop_overlap_x), and overlap in the y direction (crop_overlap_y).
+        tuple: A tuple containing the crop size in the x direction (crop_shape_x), crop size in the y direction
+            (crop_shape_y), overlap in the x direction (crop_overlap_x), and overlap in the y
+            direction (crop_overlap_y).
     """
     total_pixels = width * height
 
-    if total_pixels <= 640*480:
+    if total_pixels <= 640 * 480:
         crop_shape_x, crop_shape_y = width, height
         crop_overlap_x, crop_overlap_y = 0, 0
-    elif total_pixels < 720*576:
+    elif total_pixels < 720 * 576:
         crop_shape_x, crop_shape_y = int(width / 1.25), int(height / 1.25)
         crop_overlap_x, crop_overlap_y = 50, 50
-    elif total_pixels < 1920*1080:
+    elif total_pixels < 1920 * 1080:
         crop_shape_x, crop_shape_y = width // 2, height // 2
         crop_overlap_x, crop_overlap_y = 40, 40
-    elif total_pixels < 3840*2160:
+    elif total_pixels < 3840 * 2160:
         crop_shape_x, crop_shape_y = width // 3, height // 3
         crop_overlap_x, crop_overlap_y = 30, 30
-    elif total_pixels < 7680*4320:
+    elif total_pixels < 7680 * 4320:
         crop_shape_x, crop_shape_y = width // 4, height // 4
         crop_overlap_x, crop_overlap_y = 25, 25
     else:
@@ -708,34 +697,31 @@ def basic_crop_size_calculation(width, height):
 
 
 def auto_calculate_crop_values(image, mode="network_based", model=None, classes_list=None, conf=0.25):
-    """
-    Automatically calculate the optimal crop size and overlap for an image.
+    """Automatically calculate the optimal crop size and overlap for an image.
 
-    This function determines the optimal crop size and overlap for an image based on either the image size
-    or the detected objects within the image. The function can use a YOLO model to detect objects and adjust
-    the crop size and overlap accordingly.
+    This function determines the optimal crop size and overlap for an image based on either the image size or the
+    detected objects within the image. The function can use a YOLO model to detect objects and adjust the crop size and
+    overlap accordingly.
 
-    Parameters:
-    image (numpy.ndarray): The input BGR image.
-    mode (str): The type of analysis to perform. Can be "resolution_based" or "network_based". 
+    Parameters: image (numpy.ndarray): The input BGR image. mode (str): The type of analysis to perform. Can be
+    "resolution_based" or "network_based".
         Default is "network_analysis".
     model (YOLO): The YOLO model to use for object detection. If None, a default model yolo11m
         will be loaded. Default is None.
-    classes_list (list): A list of class indices to consider for object detection. If None, all classes 
+    classes_list (list): A list of class indices to consider for object detection. If None, all classes
         will be considered. Default is None.
     conf (float): The confidence threshold for detection in "network_based" mode. Default is 0.25.
 
     Returns:
-    tuple: A tuple containing the crop size in the x direction (crop_shape_x), crop size in the y direction 
-        (crop_shape_y), overlap in the x direction (crop_overlap_x), and overlap in the y direction (crop_overlap_y).
+        tuple: A tuple containing the crop size in the x direction (crop_shape_x), crop size in the y direction
+            (crop_shape_y), overlap in the x direction (crop_overlap_x), and overlap in the y
+            direction (crop_overlap_y).
     """
     height, width = image.shape[:2]
 
     # If the mode is 'image_size_analysis', calculate crop size based on image dimensions
-    if mode == 'resolution_based':
-        crop_shape_x, crop_shape_y, crop_overlap_x, crop_overlap_y = basic_crop_size_calculation(
-            width, height
-        )
+    if mode == "resolution_based":
+        crop_shape_x, crop_shape_y, crop_overlap_x, crop_overlap_y = basic_crop_size_calculation(width, height)
     else:
         # If no model is provided, load a default YOLO model
         if model is None:
@@ -746,9 +732,7 @@ def auto_calculate_crop_values(image, mode="network_based", model=None, classes_
 
         # If no objects are detected, calculate crop size based on image dimensions
         if len(result[0].boxes) == 0:
-            crop_shape_x, crop_shape_y, crop_overlap_x, crop_overlap_y = (
-                basic_crop_size_calculation(width, height)
-            )
+            crop_shape_x, crop_shape_y, crop_overlap_x, crop_overlap_y = basic_crop_size_calculation(width, height)
             return crop_shape_x, crop_shape_y, crop_overlap_x, crop_overlap_y
 
         max_width = 0
@@ -756,7 +740,7 @@ def auto_calculate_crop_values(image, mode="network_based", model=None, classes_
 
         # Iterate through detected boxes to find the maximum width and height
         for box in result[0].boxes:
-            _, _, box_width, box_height = box.xywh[0].tolist()  
+            _, _, box_width, box_height = box.xywh[0].tolist()
             if box_width > max_width:
                 max_width = box_width
             if box_height > max_height:
@@ -767,23 +751,23 @@ def auto_calculate_crop_values(image, mode="network_based", model=None, classes_
 
         # Adjust crop size and overlap based on the maximum detected object dimension
         if width > height:
-            crop_shape_x = int(max_value * 3)  
+            crop_shape_x = int(max_value * 3)
             crop_shape_y = int(max_value * 2)
         elif width < height:
-            crop_shape_x = int(max_value * 2)  
+            crop_shape_x = int(max_value * 2)
             crop_shape_y = int(max_value * 3)
         else:
-            crop_shape_x = int(max_value * 2.5)  
+            crop_shape_x = int(max_value * 2.5)
             crop_shape_y = int(max_value * 2.5)
 
-        crop_overlap_x = int(max_width/crop_shape_x * 1.2 * 100)
-        crop_overlap_y = int(max_height/crop_shape_y * 1.2 * 100)
+        crop_overlap_x = int(max_width / crop_shape_x * 1.2 * 100)
+        crop_overlap_y = int(max_height / crop_shape_y * 1.2 * 100)
 
         # Ensure the overlap does not exceed 70%
         if crop_overlap_x > 70:
             crop_overlap_x = 70
         if crop_overlap_y > 70:
-            crop_overlap_y = 70    
+            crop_overlap_y = 70
 
         # Ensure the number of crops does not exceed 7 in each direction
         if height // crop_shape_y > 7:
