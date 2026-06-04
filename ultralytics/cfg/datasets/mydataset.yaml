@@ -3,7 +3,7 @@ val: /Users/hayhay/Documents/fyp.v1i.yolov8-obb/valid/images/
 
 nc: 3
 
-names: 
+names:
   0: bottle
   1: box
   2: can
